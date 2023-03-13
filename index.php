@@ -70,6 +70,13 @@ function update_prompt($answer,$site_id)
     ['id'=>$site_id]
   );
 }
+function delete_prompt($question_id)
+{
+
+  global $wpdb;
+  $wpdb->delete( $wpdb->prefix . 'riskcurb_prompts', array( 'id' => $question_id ) );
+
+}
 
 function riskcurb_prompts()
 {
@@ -79,6 +86,10 @@ function riskcurb_prompts()
   if(isset($_POST['question'])){
     save_prompt($_POST['question'], $_POST['belongs']);
     // exit(json_encode(array('status'=>200,'message'=>'data saved successfully')));
+  }
+
+  if(isset($_POST['delete_prompt'])){
+    delete_prompt($_POST['site_id']);
   }
 
 $form_data = "";
@@ -122,6 +133,7 @@ $data_questions = $wpdb->get_results("SELECT * FROM $table_name ");
   <th>ID</th>
   <th>questions</th>
   <th>site</th>
+  <th>delete</th>
 
   </thead>
 
@@ -135,6 +147,13 @@ $data_questions = $wpdb->get_results("SELECT * FROM $table_name ");
   <td>$data->question</td>
   <td>
 $data->belongs
+  </td>
+  <td>
+  <form method='POST'>
+  <input type='hidden' value='$data->id' name='site_id' />
+ <button type='submit' name='delete_prompt'>button</button>
+
+</form>
   </td>
   </tr>
     ";
