@@ -96,11 +96,12 @@ function riskcurb_prompts()
   <form method="POST" style="display:flex;flex-direction: column;">
    <input name="question" placeholder="please enter question"/>
 
-   <select name="belongs">
+   <select name="belongs" style="color:black;">
    ';
 
   foreach ($subsites as $subsite) {
-    $replaced_sitename = str_replace('/', '', strtolower($subsite->path));
+     $exploded_sites = explode(".", $subsite->domain);
+    $replaced_sitename = str_replace('/', '', strtolower($exploded_sites[0]));
 
     $form_data .= "
   <option value='$replaced_sitename'>$replaced_sitename</option>
@@ -168,6 +169,7 @@ $data->belongs
     ';
 
   echo $html;
+	
 }
 add_shortcode('get_clients_prompts_admin', 'riskcurb_prompts');
 
@@ -179,25 +181,27 @@ function get_prompt_persite()
     update_prompt($_POST['answer'], $_POST['site_id']);
   }
 
+  $str = $_SERVER['HTTP_REFERER'];
+  $exploded_url = explode(".", $str);
+  $get_second_array_from_first = explode("//", strtolower($exploded_url[0]));
+  $sub_site_name =  $get_second_array_from_first[1];
 
-
-
-  $page_url = $_SERVER['HTTP_HOST'];
-  $exploded_url = explode(".", $page_url);
-  $page_extension = "";
-  if (count($exploded_url) > 1) {
-    $page_extension = $exploded_url[0];
-  } else {
-    $page_extension = "";
-  }
-  $replaced_extension = str_replace('/', '', strtolower($page_extension));
+  // $page_url = $_SERVER['HTTP_HOST'];
+  // $exploded_url = explode(".", $page_url);
+  // $page_extension = "";
+  // if (count($exploded_url) > 1) {
+  //   $page_extension = $exploded_url[0];
+  // } else {
+  //   $page_extension = "";
+  // }
+  // $replaced_extension = str_replace('/', '', strtolower($page_extension));
 
 
   global $wpdb;
 
   $table_name = $wpdb->prefix . 'riskcurb_prompts';
-
-  $data_filtered = $wpdb->get_results("SELECT * FROM $table_name WHERE belongs = '$replaced_extension' ");
+//   print_r($sub_site_name);
+  $data_filtered = $wpdb->get_results("SELECT * FROM $table_name ");
 
   $html = "";
   $html .= '
@@ -220,15 +224,14 @@ function get_prompt_persite()
     <tr>
   <td>$data->id</td>
   <td>$data->question</td>
+  <td>
   <form method='POST'>
   <input type='hidden' value='$data->id' name='site_id' />
-  <td>
   <textarea name='answer'> $data->answers </textarea>
-  </td>
-  <td>
-  <button type='submit' name='update_question'> Save </button>
-  </td>
+  <button type='submit' id='submit_form_2' name='update_question'>Answer</button>
   </form>
+  </td>
+  
   </tr>
     ";
   }
