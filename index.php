@@ -249,3 +249,53 @@ function get_prompt_persite()
 }
 
 add_shortcode('get_prompt_persite_code', 'get_prompt_persite');
+
+
+add_action("admin_menu", "addMenu");
+
+function addMenu()
+{
+  $icon_url = plugins_url( '/includes/icons/logo.jpg', __FILE__ );
+    add_menu_page("RiskCurb App Client Page", "RC App", 4, "riskcurb-app", "getAdminIframe",$icon_url);
+
+}
+
+function getAdminIframe(){
+  if (isset($_POST['question'])) {
+    save_prompt($_POST['question'], $_POST['belongs']);
+    // exit(json_encode(array('status'=>200,'message'=>'data saved successfully')));
+  }
+
+  if (isset($_POST['apiData'])) {
+    exit(json_encode(array("success"=>true,"message"=>"api data fetched")));
+    // exit(json_encode(array('status'=>200,'message'=>'data saved successfully')));
+  }
+
+  $content = "";
+
+  $content .= "
+  <style type='text/css'>
+  #my-iframe{
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  }
+  </style>
+  <iframe title='dashboard' src='https://curb.pw?profile=https://gene.riskcurb.com' scolling='no' id='my-iframe'></frame>
+  
+  <script>
+  window.onload = function(){
+  let myIframe = document.getElementById('my-iframe');
+  let doc = myIframe.contentDocument;
+  
+  doc.body.innerHTML = doc.body.innerHTML + '
+  <style>
+  #wpadminbar{display:none !important} body{background-color:none}
+  </style>
+  ';
+  }
+  </script>
+  ";
+
+  echo $content;
+}
