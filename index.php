@@ -261,19 +261,21 @@ function addMenu()
 }
 
 function getAdminIframe(){
+
   if (isset($_POST['question'])) {
     save_prompt($_POST['question'], $_POST['belongs']);
     // exit(json_encode(array('status'=>200,'message'=>'data saved successfully')));
   }
 
   if (isset($_POST['apiData'])) {
-    exit(json_encode(array("success"=>true,"message"=>"api data fetched")));
+    exit(json_encode(array("status"=>200,"success"=>true,"message"=>"api data fetched")));
     // exit(json_encode(array('status'=>200,'message'=>'data saved successfully')));
   }
 
   $content = "";
 
   $content .= "
+  
   <style type='text/css'>
   #my-iframe{
   width: 100%;
