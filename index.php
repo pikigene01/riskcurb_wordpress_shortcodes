@@ -19,16 +19,16 @@ if (!defined('ABSPATH')) {
 function database_creation()
 {
   global $wpdb;
-  $table_name = 'riskcurb_prompts';
+  $table_name = 'riskcurb_fields';
   $site_details = $wpdb->prefix . $table_name;
   $charset = $wpdb->get_charset_collate;
 
   $table = "CREATE TABLE " . $site_details . "
   (
-  id int NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   belongs text DEFAULT NULL,
-  question text DEFAULT NULL,
-  answers text DEFAULT NULL,
+  name text DEFAULT NULL,
+  value text DEFAULT NULL,
   PRIMARY KEY (id)
   ) $charset;
   ";
@@ -44,15 +44,15 @@ function save_prompt($prompt_data, $belongs)
 {
 
   global $wpdb;
-  $table_name = $wpdb->prefix . 'riskcurb_prompts';
+  $table_name = $wpdb->prefix . 'riskcurb_fields';
   $get_id = $wpdb->get_var("SELECT `id` FROM $table_name ORDER BY id DESC LIMIT 1");
 
 
   $wpdb->insert(
-    $wpdb->prefix . 'riskcurb_prompts',
+    $wpdb->prefix . 'riskcurb_fields',
     [
       'id' => $get_id + 1,
-      'question' => $prompt_data,
+      'name' => $prompt_data,
       'belongs' => $belongs,
     ]
   );
@@ -62,9 +62,9 @@ function update_prompt($answer, $site_id)
 
   global $wpdb;
   $wpdb->update(
-    $wpdb->prefix . 'riskcurb_prompts',
+    $wpdb->prefix . 'riskcurb_fields',
     [
-      'answers' => $answer,
+      'value' => $answer,
 
     ],
     ['id' => $site_id]
@@ -74,7 +74,7 @@ function delete_prompt($question_id)
 {
 
   global $wpdb;
-  $wpdb->delete($wpdb->prefix . 'riskcurb_prompts', array('id' => $question_id));
+  $wpdb->delete($wpdb->prefix . 'riskcurb_fields', array('id' => $question_id));
 }
 
 function riskcurb_prompts()
@@ -120,7 +120,7 @@ function riskcurb_prompts()
 
   global $wpdb;
 
-  $table_name = $wpdb->prefix . 'riskcurb_prompts';
+  $table_name = $wpdb->prefix . 'riskcurb_fields';
 
   $data_questions = $wpdb->get_results("SELECT * FROM $table_name ");
 
@@ -144,9 +144,9 @@ function riskcurb_prompts()
     $html .= "
     <tr>
   <td>$data->id</td>
-  <td>$data->question</td>
+  <td>$data->name</td>
   <td>
-$data->belongs
+$data->value
   </td>
   <td>
   <form method='POST'>
@@ -199,7 +199,7 @@ function get_prompt_persite()
 
   global $wpdb;
 
-  $table_name = $wpdb->prefix . 'riskcurb_prompts';
+  $table_name = $wpdb->prefix . 'riskcurb_fields';
 //   print_r($sub_site_name);
   $data_filtered = $wpdb->get_results("SELECT * FROM $table_name ");
 
@@ -223,11 +223,11 @@ function get_prompt_persite()
     $html .= "
     <tr>
   <td>$data->id</td>
-  <td>$data->question</td>
+  <td>$data->name</td>
   <td>
   <form method='POST'>
   <input type='hidden' value='$data->id' name='site_id' />
-  <textarea name='answer'> $data->answers </textarea>
+  <textarea name='answer'> $data->value </textarea>
   <button type='submit' id='submit_form_2' name='update_question'>Answer</button>
   </form>
   </td>
@@ -261,16 +261,6 @@ function addMenu()
 }
 
 function getAdminIframe(){
-
-  if (isset($_POST['question'])) {
-    save_prompt($_POST['question'], $_POST['belongs']);
-    // exit(json_encode(array('status'=>200,'message'=>'data saved successfully')));
-  }
-
-  if (isset($_POST['apiData'])) {
-    exit(json_encode(array("status"=>200,"success"=>true,"message"=>"api data fetched")));
-    // exit(json_encode(array('status'=>200,'message'=>'data saved successfully')));
-  }
 
   $content = "";
 
