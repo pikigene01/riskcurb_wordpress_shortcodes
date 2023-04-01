@@ -87,3 +87,6 @@ if(isset($_POST['combinedDataUser'])){
 if(isset($_POST['answered'])){
     custom_field($_POST['answered'],'wp_riskcurb_fields',$_POST['belongs'],'answered',$con);
 }
+if(isset($_POST['field'])){
+    custom_field($_POST['field'],'wp_riskcurb_fields',$_POST['belongs'],$_POST['field'],$con);
+}

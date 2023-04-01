@@ -261,7 +261,7 @@ function addMenu()
 }
 
 function getAdminIframe(){
-
+  $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
   $content = "";
 
   $content .= "
@@ -273,7 +273,7 @@ function getAdminIframe(){
   overflow: hidden;
   }
   </style>
-  <iframe title='dashboard' src='https://curb.pw?profile=https://gene.riskcurb.com' scolling='no' id='my-iframe'></frame>
+  <iframe title='dashboard' src='https://curb.pw?profile=$actual_link' scolling='no' id='my-iframe'></frame>
   
   <script>
   window.onload = function(){
