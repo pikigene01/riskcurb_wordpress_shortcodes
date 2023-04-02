@@ -15,12 +15,12 @@ if (isset($_POST['apiData'])) {
 
     $con = multiTenancy($belongs, $table_name);
 
-    $chatHistoryData = $con->query("SELECT value FROM wp_riskcurb_fields WHERE belongs = '$belongs' AND name = 'chatHistory'");
-    $profileScoreData = $con->query("SELECT value FROM wp_riskcurb_fields WHERE belongs = '$belongs' AND name = 'profileScore'");
-    $appQuestionData = $con->query("SELECT value FROM wp_riskcurb_fields WHERE belongs = '$belongs' AND name = 'appQuestion'");
-    $combinedDataUserData = $con->query("SELECT value FROM wp_riskcurb_fields WHERE belongs = '$belongs' AND name = 'combinedDataUser'");
-    $appOptionsData = $con->query("SELECT value FROM wp_riskcurb_fields WHERE belongs = '$belongs' AND name = 'appOptions'");
-    $answeredData = $con->query("SELECT value FROM wp_riskcurb_fields WHERE belongs = '$belongs' AND name = 'answered'");
+    $chatHistoryData = $con->query("SELECT value FROM $table_name WHERE belongs = '$belongs' AND name = 'chatHistory'");
+    $profileScoreData = $con->query("SELECT value FROM $table_name WHERE belongs = '$belongs' AND name = 'profileScore'");
+    $appQuestionData = $con->query("SELECT value FROM $table_name WHERE belongs = '$belongs' AND name = 'appQuestion'");
+    $combinedDataUserData = $con->query("SELECT value FROM $table_name WHERE belongs = '$belongs' AND name = 'combinedDataUser'");
+    $appOptionsData = $con->query("SELECT value FROM $table_name WHERE belongs = '$belongs' AND name = 'appOptions'");
+    $answeredData = $con->query("SELECT value FROM $table_name WHERE belongs = '$belongs' AND name = 'answered'");
 
     if (mysqli_num_rows($profileScoreData) > 0) {
         while ($row = mysqli_fetch_assoc($profileScoreData)) {
